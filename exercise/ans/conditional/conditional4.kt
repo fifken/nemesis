@@ -5,11 +5,8 @@ fun main(){
 
     when(x){
         "1" -> println("Kamu memilih: Nasi Goreng")
-        "2" -> println("Kamu memilih: Mie Ayang")
+        "2" -> println("Kamu memilih: Mie Ayam")
         "3" -> println("Kamu memilih: Ayam Geprek")
-        else -> {
-            println("Pilih lagi")
-            return
-        }
+        else -> println("Pilih lagi")
     }
 }
