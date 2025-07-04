@@ -1,6 +1,6 @@
 
 ```
-#### 1. Library paling umum digunakan untuk HTTP Client di Android Kotlin modern:
+#### 1. Library paling umum digunakan untuk HTTP Client di Android Kotlin modern: C
 
 a. OkHttp
 b. Volley
@@ -9,7 +9,7 @@ d. Alamofire
 
 ---
 
-#### 2. Fungsi dari `@GET("users")` dalam Retrofit:
+#### 2. Fungsi dari `@GET("users")` dalam Retrofit: C
 
 a. Menyimpan data pengguna
 b. Mengirim form ke server
@@ -18,7 +18,7 @@ d. Menghapus pengguna dari server
 
 ---
 
-#### 3. Mengapa kita menggunakan Coroutine atau `Call.enqueue()` saat Retrofit dipakai?
+#### 3. Mengapa kita menggunakan Coroutine atau `Call.enqueue()` saat Retrofit dipakai? B
 
 a. Untuk mempermudah syntax Kotlin
 b. Untuk menjaga agar UI tidak macet saat HTTP call
@@ -27,7 +27,7 @@ d. Agar aplikasi bisa offline
 
 ---
 
-#### 4. Untuk mengkonversi JSON ke objek Kotlin, kita menggunakan:
+#### 4. Untuk mengkonversi JSON ke objek Kotlin, kita menggunakan: B
 
 a. JsonParser
 b. GsonConverterFactory
@@ -36,7 +36,7 @@ d. JSONBuilder
 
 ---
 
-#### 5. Fungsi utama `baseUrl` di Retrofit:
+#### 5. Fungsi utama `baseUrl` di Retrofit: C
 
 a. Mengatur authentication
 b. Menentukan response type
@@ -45,7 +45,7 @@ d. Menentukan ukuran file
 
 ---
 
-#### 6. Kapan kita perlu menambahkan `@Query` di Retrofit?
+#### 6. Kapan kita perlu menambahkan `@Query` di Retrofit? C
 
 a. Saat upload file
 b. Saat mengirim body JSON
@@ -54,7 +54,7 @@ d. Saat menyimpan token
 
 ---
 
-#### 7. `Response.body()` akan bernilai `null` jika:
+#### 7. `Response.body()` akan bernilai `null` jika: C
 
 a. API berhasil dipanggil
 b. Status HTTP adalah 200
@@ -63,7 +63,7 @@ d. Retrofit tidak digunakan
 
 ---
 
-#### 8. Untuk membuat POST request dengan Retrofit, anotasi yang digunakan adalah:
+#### 8. Untuk membuat POST request dengan Retrofit, anotasi yang digunakan adalah: B
 
 a. @GET
 b. @POST
@@ -72,7 +72,7 @@ d. @FETCH
 
 ---
 
-#### 9. Apa yang terjadi jika kita lupa menambahkan `.create()` pada GsonConverterFactory?
+#### 9. Apa yang terjadi jika kita lupa menambahkan `.create()` pada GsonConverterFactory? C
 
 a. Program tetap jalan
 b. Data akan disimpan sebagai string
@@ -81,7 +81,7 @@ d. File JSON akan corrupt
 
 ---
 
-#### 10. Manakah dari berikut ini yang merupakan cara **asynchronous** memanggil API dengan Retrofit?
+#### 10. Manakah dari berikut ini yang merupakan cara **asynchronous** memanggil API dengan Retrofit? B
 
 a. `.execute()`
 b. `.enqueue()`
@@ -92,43 +92,49 @@ d. `.await()`
 ```
 
 #### 11. Jelaskan perbedaan antara Retrofit dan OkHttp dalam arsitektur Android.
+okHttp Http Client tingkat rendah
+Retrofit menggunakan okHttp, parsing response, dll
 
 ---
 
 #### 12. Sebutkan dua cara menangani response API di Retrofit!
+enqueue()
+suspend function dan Response<T>
 
 ---
 
 #### 13. Bagaimana cara mengecek apakah response dari server berhasil atau tidak?
-
+statuscode atau response successs di objeknya
 ---
 
 #### 14. Apa fungsi `@Header("Authorization")` dalam Retrofit?
+sebagai validasi user yang ditambahkan di header authorization
 
 ---
 
 #### 15. Apa itu suspend function dan mengapa sering digunakan bersama Retrofit?
+secara asynchorous fungsi dijalankan tanpa blocking thread
 
 ---
 
 #### 16. Sebutkan satu contoh kasus nyata di mana HTTP client dibutuhkan dalam aplikasi Android.
-
+mengambil data dari rest api untuk ditampilkan
 ---
 
 #### 17. Jika API kamu lambat dan pengguna harus menunggu lama, bagaimana solusi teknisnya?
-
+request di background thread/coroutine
 ---
 
 #### 18. Bagaimana cara menangani `TimeoutException` saat HTTP call?
-
+menggunakan try catch dan kasi error message
 ---
 
 #### 19. Mengapa penting untuk menangani error code seperti 401 atau 500?
-
+agar user dapat feedback yang tepat
 ---
 
 #### 20. Apa itu DTO dalam konteks komunikasi dengan API?
-
+objek untuk mengirim atau menerima data antar client dan server
 ---
 
 ### 🛠️ ** FIX CODE **
@@ -138,6 +144,11 @@ d. `.await()`
 ```kotlin
 interface ApiService {
     @GET
+    fun getUser(): Call<User>
+}
+
+interface ApiService {
+    @GET("user")
     fun getUser(): Call<User>
 }
 ```
@@ -150,6 +161,11 @@ interface ApiService {
 val retrofit = Retrofit.Builder()
     .baseUrl("https://api.example.com")
     .addConverterFactory(GsonConverterFactory)
+    .build()
+
+    val retrofit = Retrofit.Builder()
+    .baseUrl("https://api.example.com/")
+    .addConverterFactory(GsonConverterFactory.create())
     .build()
 ```
 
@@ -165,6 +181,8 @@ val retrofit = Retrofit.Builder()
     "name": "Anna"
   }
 }
+
+
 ```
 
 Perbaiki model Kotlin-nya:
@@ -173,6 +191,17 @@ Perbaiki model Kotlin-nya:
 data class User(
     val id: Int,
     val fullName: String
+)
+
+
+data class ApiResponse(
+    val status: String,
+    val data: User
+)
+
+data class User(
+    val id: Int,
+    val name: String
 )
 ```
 
@@ -183,6 +212,9 @@ data class User(
 ```kotlin
 @POST("user/add")
 fun createUser(@Body user: ???): Call<User>
+
+@POST("user/add")
+fun createUser(@Body user: User): Call<User>
 ```
 
 ---
@@ -192,6 +224,17 @@ fun createUser(@Body user: ???): Call<User>
 ```kotlin
 val call = apiService.getUser()
 val result = call.execute()
+
+
+val call = apiService.getUser()
+call.enqueue(object : Callback<User> {
+    override fun onResponse(call: Call<User>, response: Response<User>) {
+        // handle success
+    }
+    override fun onFailure(call: Call<User>, t: Throwable) {
+        // handle error
+    }
+})
 ```
 
 ---
@@ -201,6 +244,10 @@ val result = call.execute()
 ```kotlin
 @GET("user")
 fun getUser(@Param("id") id: Int): Call<User>
+
+
+@GET("user")
+fun getUser(@Query("id") id: Int): Call<User>
 ```
 
 ---
@@ -210,6 +257,9 @@ fun getUser(@Param("id") id: Int): Call<User>
 ```kotlin
 @GET("user")
 fun getUser(): Call<User>
+
+@GET("user")
+suspend fun getUser(): User
 ```
 
 ---
@@ -221,6 +271,16 @@ val user = api.getUser()
 user.enqueue(object: ??? {
     override fun onResponse(...) {
         // handle
+    }
+})
+
+val user = api.getUser()
+user.enqueue(object: Callback<User> {
+    override fun onResponse(call: Call<User>, response: Response<User>) {
+        // handle
+    }
+    override fun onFailure(call: Call<User>, t: Throwable) {
+        // handle error
     }
 })
 ```
@@ -237,6 +297,21 @@ call.enqueue(object: Callback<User> {
         // handle success
     }
 })
+
+
+val call = api.getUser()
+call.enqueue(object: Callback<User> {
+    override fun onFailure(call: Call<User>, t: Throwable) {
+        // handle error
+    }
+    override fun onResponse(call: Call<User>, response: Response<User>) {
+        if (response.isSuccessful) {
+            // handle success
+        } else {
+            // handle error response
+        }
+    }
+})
 ```
 
 ---
@@ -246,6 +321,15 @@ call.enqueue(object: Callback<User> {
 ```kotlin
 val result = api.getUser()
 val data = result.body()
+
+
+try {
+    val result = api.getUser()
+    val data = result.body()
+    // handle data
+} catch (e: Exception) {
+    // handle error
+}
 ```
 
 ---
